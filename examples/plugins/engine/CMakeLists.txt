@@ -3,3 +3,6 @@ add_executable(examplePluginEngine_class
   ExampleEnginePlugin.h ExampleEnginePlugin.cpp
 )
 target_link_libraries(examplePluginEngine_class adios2)
+
+add_library(examplePluginLib ExampleEnginePlugin.cpp)
+target_link_libraries(examplePluginLib adios2)
