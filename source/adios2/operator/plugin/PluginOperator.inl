@@ -27,9 +27,8 @@ template <typename T>
 void PluginOperator::RegisterPlugin(const std::string name)
 {
     OperatorCreateFun createFun =
-        [](IO &io, const std::string &name, const Mode openMode,
-           helper::Comm comm) -> PluginOperatorInterface * {
-        return new T(io, name, openMode, std::move(comm));
+        [](const std::string &type, const Params &parameters) -> PluginOperatorInterface * {
+          return new T(type, parameters);
     };
     OperatorDestroyFun destroyFun = [](Operator *obj) -> void { delete obj; };
 

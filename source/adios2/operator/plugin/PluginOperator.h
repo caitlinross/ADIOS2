@@ -4,8 +4,8 @@
  *
  * PluginOperator.h Support for an operator implemented outside libadios2
  *
- *  Created on: July 17, 2017
- *      Author: Chuck Atkins <chuck.atkins@kitware.com>
+ *  Created on: June 22, 2021
+ *      Author: Caitlin Ross <caitlin.ross@kitware.com>
  */
 
 #ifndef ADIOS2_OPERATOR_PLUGIN_PLUGINOPERATOR_H_
@@ -23,8 +23,6 @@
 #include "adios2/common/ADIOSTypes.h"
 #include "adios2/core/Operator.h"
 #include "adios2/core/IO.h"
-#include "adios2/core/Variable.h"
-#include "adios2/core/VariableCompound.h"
 #include "adios2/helper/adiosComm.h"
 
 namespace adios2
@@ -65,30 +63,25 @@ public:
     template <typename T>
     static void RegisterPlugin(const std::string name);
 
-public:
-    PluginOperator(IO &io, const std::string &name, const Mode mode,
-                 helper::Comm comm);
+    PluginOperator(const std::string type, const Params &parameters);
     virtual ~PluginOperator();
 
-    StepStatus BeginStep(StepMode mode,
-                         const float timeoutSeconds = 0.f) override;
-    void PerformPuts() override;
-    void PerformGets() override;
-    void EndStep() override;
+    size_t BufferMaxSize(const size_t sizeIn) const override;
+
+    size_t Compress(const void *dataIn, const Dims &dimensions,
+                    const size_t elementSize, DataType type, void *bufferOut,
+                    const Params &parameters, Params &info) const override;
+
+    size_t Decompress(const void *bufferIn, const size_t sizeIn,
+                      void *dataOut, const size_t sizeOut,
+                      Params &info) const override;
+
+    size_t Decompress(const void *bufferIn, const size_t sizeIn, void *dataOut,
+                      const Dims &dimensions, DataType type,
+                      const Params &parameters) const override;
 
 protected:
-    void Init() override;
-
-#define declare(T)                                                             \
-    void DoPutSync(Variable<T> &, const T *) override;                         \
-    void DoPutDeferred(Variable<T> &, const T *) override;                     \
-    void DoGetSync(Variable<T> &, T *) override;                               \
-    void DoGetDeferred(Variable<T> &, T *) override;
-
-    ADIOS2_FOREACH_STDTYPE_1ARG(declare)
-#undef declare
-
-    void DoClose(const int transportIndex = -1) override;
+    void Init();
 
 private:
     struct Impl;

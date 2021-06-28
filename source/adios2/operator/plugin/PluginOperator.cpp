@@ -54,27 +54,15 @@ void PluginOperator::RegisterPlugin(const std::string pluginName,
 
 /******************************************************************************/
 
-PluginOperator::PluginOperator(IO &io, const std::string &name, const Mode mode,
-                           helper::Comm comm)
-: Operator("Plugin", io, name, mode, std::move(comm)), m_Impl(new Impl)
+PluginOperator::PluginOperator(const std::string type, const Params &parameters)
+: Operator(type, parameters), m_Impl(new Impl)
 {
     Init();
     m_Impl->m_Plugin =
-        m_Impl->m_HandleCreate(io, m_Impl->m_PluginName, mode, m_Comm.Duplicate());
+        m_Impl->m_HandleCreate(type, parameters);
 }
 
 PluginOperator::~PluginOperator() { m_Impl->m_HandleDestroy(m_Impl->m_Plugin); }
-
-StepStatus PluginOperator::BeginStep(StepMode mode, const float timeoutSeconds)
-{
-    return m_Impl->m_Plugin->BeginStep(mode, timeoutSeconds);
-}
-
-void PluginOperator::PerformPuts() { m_Impl->m_Plugin->PerformPuts(); }
-
-void PluginOperator::PerformGets() { m_Impl->m_Plugin->PerformGets(); }
-
-void PluginOperator::EndStep() { m_Impl->m_Plugin->EndStep(); }
 
 void PluginOperator::Init()
 {
@@ -130,32 +118,6 @@ void PluginOperator::Init()
                                      "library");
         }
     }
-}
-
-#define declare(T)                                                             \
-    void PluginOperator::DoPutSync(Variable<T> &variable, const T *values)       \
-    {                                                                          \
-        m_Impl->m_Plugin->DoPutSync(variable, values);                         \
-    }                                                                          \
-    void PluginOperator::DoPutDeferred(Variable<T> &variable, const T *values)   \
-    {                                                                          \
-        m_Impl->m_Plugin->DoPutDeferred(variable, values);                     \
-    }                                                                          \
-    void PluginOperator::DoGetSync(Variable<T> &variable, T *values)             \
-    {                                                                          \
-        m_Impl->m_Plugin->DoGetSync(variable, values);                         \
-    }                                                                          \
-    void PluginOperator::DoGetDeferred(Variable<T> &variable, T *values)         \
-    {                                                                          \
-        m_Impl->m_Plugin->DoGetDeferred(variable, values);                     \
-    }
-
-ADIOS2_FOREACH_STDTYPE_1ARG(declare)
-#undef declare
-
-void PluginOperator::DoClose(const int transportIndex)
-{
-    m_Impl->m_Plugin->Close(transportIndex);
 }
 
 } // end namespace compress
