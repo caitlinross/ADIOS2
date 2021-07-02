@@ -22,6 +22,7 @@
 #include "adios2/common/ADIOSTypes.h"
 #include "adios2/core/Operator.h"
 #include "adios2/helper/adiosComm.h"
+#include "adios2/toolkit/plugin/PluginManager.h"
 
 namespace adios2
 {
@@ -185,6 +186,8 @@ private:
 
     /** operators created with DefineOperator */
     std::map<std::string, std::shared_ptr<Operator>> m_Operators;
+
+    plugin::PluginManager m_PluginManager;
 
     void CheckOperator(const std::string name) const;
 

@@ -85,6 +85,7 @@ ADIOS::ADIOS(const std::string configFile, helper::Comm comm,
             YAMLInit(configFile);
         }
     }
+    m_PluginManager.DiscoverPlugins();
 }
 
 ADIOS::ADIOS(const std::string configFile, const std::string hostLanguage)

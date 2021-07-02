@@ -115,6 +115,8 @@ add_library(adios2_core
 
   toolkit/burstbuffer/FileDrainer.cpp
   toolkit/burstbuffer/FileDrainerSingleThread.cpp
+
+  toolkit/plugin/PluginManager.cpp
 )
 set_property(TARGET adios2_core PROPERTY EXPORT_NAME core)
 set_property(TARGET adios2_core PROPERTY OUTPUT_NAME adios2${ADIOS2_LIBRARY_SUFFIX}_core)
