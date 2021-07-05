@@ -86,7 +86,7 @@ void ExampleEnginePlugin::Init()
     m_Log << now() << " Init" << std::endl;
 }
 
-#define define(T)                                                              \
+#define declare(T)                                                              \
     void ExampleEnginePlugin::DoPutSync(Variable<T> &variable,                 \
                                         const T *values)                       \
     {                                                                          \
@@ -99,8 +99,8 @@ void ExampleEnginePlugin::Init()
         m_Log << now() << " Writing variable \"" << variable.m_Name << "\""    \
               << std::endl;                                                    \
     }
-ADIOS2_FOREACH_STDTYPE_1ARG(define)
-#undef define
+ADIOS2_FOREACH_STDTYPE_1ARG(declare)
+#undef declare
 
 void ExampleEnginePlugin::DoClose(const int transportIndex)
 {
