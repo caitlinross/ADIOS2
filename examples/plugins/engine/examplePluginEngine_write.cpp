@@ -16,7 +16,7 @@
 #include <adios2.h>
 #include <adios2/engine/plugin/PluginEngine.h>
 
-#include "ExampleEnginePlugin.h"
+#include "ExampleWritePlugin.h"
 
 int main(int argc, char *argv[])
 {

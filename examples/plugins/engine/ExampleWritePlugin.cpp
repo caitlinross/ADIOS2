@@ -9,7 +9,7 @@
  *      Author: Chuck Atkins <chuck.atkins@kitware.com>
  */
 
-#include "ExampleEnginePlugin.h"
+#include "ExampleWritePlugin.h"
 
 #include <cstdio>
 #include <cstring>

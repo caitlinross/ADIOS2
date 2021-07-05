@@ -1,5 +1,5 @@
-add_executable(examplePluginEngine_class
-  examplePluginEngine_class.cpp
-  ExampleEnginePlugin.h ExampleEnginePlugin.cpp
+add_executable(examplePluginEngine_write
+  examplePluginEngine_write.cpp
+  ExampleWritePlugin.h ExampleWritePlugin.cpp
 )
-target_link_libraries(examplePluginEngine_class adios2::cxx11 adios2_core)
+target_link_libraries(examplePluginEngine_write adios2::cxx11 adios2_core)
