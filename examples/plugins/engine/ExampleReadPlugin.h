@@ -20,6 +20,7 @@
 #include <adios2/core/IO.h>
 #include <adios2/engine/plugin/PluginEngineInterface.h>
 #include "adios2/helper/adiosComm.h"
+#include "adios2/engine/bp4/BP4Reader.h"
 
 namespace adios2
 {
@@ -36,6 +37,8 @@ public:
                         helper::Comm comm);
     virtual ~ExampleReadPlugin();
 
+    void PerformGets() override;
+
 protected:
     void Init() override;
 
@@ -48,7 +51,7 @@ protected:
     void DoClose(const int transportIndex = -1) override;
 
 private:
-    std::ifstream m_Data;
+    std::unique_ptr<BP4Reader> m_Reader;
 };
 
 } // end namespace engine

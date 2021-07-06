@@ -29,41 +29,36 @@ namespace engine
 
 ExampleReadPlugin::ExampleReadPlugin(IO &io, const std::string &name,
                                          const Mode mode, helper::Comm comm)
-: PluginEngineInterface(io, name, mode, std::move(comm))
+: PluginEngineInterface(io, name, mode, comm.Duplicate())
 {
     Init();
+    m_Reader.reset(new BP4Reader(io, name, mode, comm.Duplicate()));
 }
 
-ExampleReadPlugin::~ExampleReadPlugin() { m_Data.close(); }
+ExampleReadPlugin::~ExampleReadPlugin() {  }
 
 void ExampleReadPlugin::Init()
 {
-    std::string fileName = "ExamplePlugin.bin";
-    auto paramFileNameIt = m_IO.m_Parameters.find("FileName");
-    if (paramFileNameIt != m_IO.m_Parameters.end())
-    {
-        fileName = paramFileNameIt->second;
-    }
-
-    m_Data.open(fileName);
-    if (!m_Data)
-    {
-        throw std::ios_base::failure(
-            "ExampleReadPlugin: Failed to open file " + fileName);
-    }
 }
 
 #define declare(T)                                                              \
     void ExampleReadPlugin::DoGetSync(Variable<T> &variable,                 \
                                         T *values)                       \
     {                                                                          \
+        m_Reader->Get(variable, values, adios2::Mode::Sync); \
     }                                                                          \
     void ExampleReadPlugin::DoGetDeferred(Variable<T> &variable,                 \
                                             T *values)                       \
     {                                                                          \
+        m_Reader->Get(variable, values); \
     }
 ADIOS2_FOREACH_STDTYPE_1ARG(declare)
 #undef declare
+
+void ExampleReadPlugin::PerformGets()
+{
+    m_Reader->PerformGets();
+}
 
 void ExampleReadPlugin::DoClose(const int transportIndex)
 {

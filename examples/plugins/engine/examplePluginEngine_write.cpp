@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     const std::size_t Nx = myFloats.size();
 
     adios2::core::engine::PluginEngine::RegisterPlugin<
-        adios2::core::engine::ExampleEnginePlugin>("MyPlugin");
+        adios2::core::engine::ExampleWritePlugin>("MyPlugin");
 
     try
     {
@@ -48,6 +48,7 @@ int main(int argc, char *argv[])
 
         /** Write variable for buffering */
         writer.Put<float>(var, myFloats.data());
+        writer.PerformPuts();
 
         /** Create bp file, engine becomes unreachable after this*/
         writer.Close();

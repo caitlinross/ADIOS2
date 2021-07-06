@@ -2,7 +2,7 @@
  * Distributed under the OSI-approved Apache License, Version 2.0.  See
  * accompanying file Copyright.txt for details.
  *
- * ExampleEnginePlugin.cpp This plugin does nothing but write API calls out to a
+ * ExampleWritePlugin.cpp This plugin does nothing but write API calls out to a
  * log file.
  *
  *  Created on: Jul 31, 2017
@@ -58,16 +58,20 @@ namespace core
 namespace engine
 {
 
-ExampleEnginePlugin::ExampleEnginePlugin(IO &io, const std::string &name,
+ExampleWritePlugin::ExampleWritePlugin(IO &io, const std::string &name,
                                          const Mode mode, helper::Comm comm)
-: PluginEngineInterface(io, name, mode, std::move(comm))
+: PluginEngineInterface(io, name, mode, comm.Duplicate())
 {
     Init();
+    m_Writer.reset(new BP4Writer(io, name, mode, comm.Duplicate()));
 }
 
-ExampleEnginePlugin::~ExampleEnginePlugin() { m_Log.close(); }
+ExampleWritePlugin::~ExampleWritePlugin()
+{
+    m_Log.close();
+}
 
-void ExampleEnginePlugin::Init()
+void ExampleWritePlugin::Init()
 {
     std::string logName = "ExamplePlugin.log";
     auto paramLogNameIt = m_IO.m_Parameters.find("LogName");
@@ -80,32 +84,43 @@ void ExampleEnginePlugin::Init()
     if (!m_Log)
     {
         throw std::ios_base::failure(
-            "ExampleEnginePlugin: Failed to open log file " + logName);
+            "ExampleWritePlugin: Failed to open log file " + logName);
     }
-
     m_Log << now() << " Init" << std::endl;
 }
 
 #define declare(T)                                                              \
-    void ExampleEnginePlugin::DoPutSync(Variable<T> &variable,                 \
+    void ExampleWritePlugin::DoPutSync(Variable<T> &variable,                 \
                                         const T *values)                       \
     {                                                                          \
         m_Log << now() << " Writing variable \"" << variable.m_Name << "\""    \
               << std::endl;                                                    \
+        m_Writer->Put(variable, values, adios2::Mode::Sync); \
+        m_Log << now() << " Wrote data of size " << variable.SelectionSize()  \
+              << std::endl; \
     }                                                                          \
-    void ExampleEnginePlugin::DoPutDeferred(Variable<T> &variable,                 \
+    void ExampleWritePlugin::DoPutDeferred(Variable<T> &variable,                 \
                                         const T *values)                       \
     {                                                                          \
         m_Log << now() << " Writing variable \"" << variable.m_Name << "\""    \
               << std::endl;                                                    \
+        m_Writer->Put(variable, values); \
+        m_Log << now() << " Wrote data of size " << variable.SelectionSize()  \
+              << std::endl; \
     }
 ADIOS2_FOREACH_STDTYPE_1ARG(declare)
 #undef declare
 
-void ExampleEnginePlugin::DoClose(const int transportIndex)
+void ExampleWritePlugin::PerformPuts()
+{
+    m_Writer->PerformPuts();
+}
+
+void ExampleWritePlugin::DoClose(const int transportIndex)
 {
     m_Log << now() << " Close with transportIndex " << transportIndex
           << std::endl;
+    m_Writer->Flush(transportIndex);
 }
 
 } // end namespace engine

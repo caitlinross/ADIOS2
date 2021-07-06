@@ -2,7 +2,7 @@
  * Distributed under the OSI-approved Apache License, Version 2.0.  See
  * accompanying file Copyright.txt for details.
  *
- * ExampleEnginePlugin.h This plugin does nothing but write API calls out to a
+ * ExampleWritePlugin.h This plugin does nothing but write API calls out to a
  * log file.
  *
  *  Created on: Jul 31, 2017
@@ -14,12 +14,14 @@
 
 #include <fstream>
 #include <string>
+#include <memory>
 
 #include <adios2/common/ADIOSMacros.h>
 #include <adios2/common/ADIOSTypes.h>
 #include <adios2/core/IO.h>
 #include <adios2/engine/plugin/PluginEngineInterface.h>
 #include "adios2/helper/adiosComm.h"
+#include "adios2/engine/bp4/BP4Writer.h"
 
 namespace adios2
 {
@@ -29,12 +31,14 @@ namespace engine
 {
 
 /** An engine interface to be used aby the plugin infrastructure */
-class ExampleEnginePlugin : public PluginEngineInterface
+class ExampleWritePlugin : public PluginEngineInterface
 {
 public:
-    ExampleEnginePlugin(IO &io, const std::string &name, const Mode openMode,
+    ExampleWritePlugin(IO &io, const std::string &name, const Mode openMode,
                         helper::Comm comm);
-    virtual ~ExampleEnginePlugin();
+    virtual ~ExampleWritePlugin();
+
+    void PerformPuts() override;
 
 protected:
     void Init() override;
@@ -49,6 +53,7 @@ protected:
 
 private:
     std::ofstream m_Log;
+    std::unique_ptr<BP4Writer> m_Writer;
 };
 
 } // end namespace engine

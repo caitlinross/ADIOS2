@@ -47,10 +47,15 @@ int main(int argc, char *argv[])
         writer.PerformGets();
 
 
-        if (readFloats != myFloats)
+        if (readFloats == myFloats)
+        {
+            std::cout << "data was read correctly!" << std::endl;
+        }
+        else
         {
             std::cout << "data was not read correctly!" << std::endl;
         }
+
 
         /** Create bp file, engine becomes unreachable after this*/
         writer.Close();
