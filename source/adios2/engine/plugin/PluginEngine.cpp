@@ -56,11 +56,11 @@ void PluginEngine::RegisterPlugin(const std::string pluginName,
 
 PluginEngine::PluginEngine(IO &io, const std::string &name, const Mode mode,
                            helper::Comm comm)
-: Engine("Plugin", io, name, mode, std::move(comm)), m_Impl(new Impl)
+: Engine("Plugin", io, name, mode, comm.Duplicate()), m_Impl(new Impl)
 {
     Init();
     m_Impl->m_Plugin =
-        m_Impl->m_HandleCreate(io, m_Impl->m_PluginName, mode, m_Comm.Duplicate());
+        m_Impl->m_HandleCreate(io, m_Impl->m_PluginName, mode, comm.Duplicate());
 }
 
 PluginEngine::~PluginEngine() { m_Impl->m_HandleDestroy(m_Impl->m_Plugin); }

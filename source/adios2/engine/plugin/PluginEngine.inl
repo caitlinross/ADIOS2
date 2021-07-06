@@ -29,7 +29,7 @@ void PluginEngine::RegisterPlugin(const std::string name)
     EngineCreateFun createFun =
         [](IO &io, const std::string &name, const Mode openMode,
            helper::Comm comm) -> PluginEngineInterface * {
-        return new T(io, name, openMode, std::move(comm));
+        return new T(io, name, openMode, comm.Duplicate());
     };
     EngineDestroyFun destroyFun = [](Engine *obj) -> void { delete obj; };
 
