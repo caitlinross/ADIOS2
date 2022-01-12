@@ -14,10 +14,8 @@
 
 #include "PluginEngineInterface.h"
 
-#include <functional>  // for function
 #include <memory>      // for unique_ptr
 #include <string>      // for string
-#include <type_traits> // for add_pointer
 
 #include "adios2/common/ADIOSMacros.h"
 #include "adios2/common/ADIOSTypes.h"
@@ -37,16 +35,6 @@ namespace engine
 class PluginEngine : public Engine
 {
 public:
-    // Function pointers used for the plugin factory methods
-    using EngineCreatePtr = std::add_pointer<PluginEngineInterface *(
-        IO &, const std::string &, const Mode, helper::Comm)>::type;
-    using EngineDestroyPtr =
-        std::add_pointer<void(PluginEngineInterface *)>::type;
-    using EngineCreateFun =
-        std::function<std::remove_pointer<EngineCreatePtr>::type>;
-    using EngineDestroyFun =
-        std::function<std::remove_pointer<EngineDestroyPtr>::type>;
-
     PluginEngine(IO &io, const std::string &name, const Mode mode,
                  helper::Comm comm);
     virtual ~PluginEngine();
