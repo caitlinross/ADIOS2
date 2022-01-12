@@ -36,6 +36,12 @@ void IO::SetEngine(const std::string engineType)
     m_IO->SetEngine(engineType);
 }
 
+void IO::SetEngine(const std::string engineType, const std::string pluginName)
+{
+    helper::CheckForNullptr(m_IO, "in call to IO::SetEngine");
+    m_IO->SetEngine(engineType, pluginName);
+}
+
 void IO::SetParameter(const std::string key, const std::string value)
 {
     helper::CheckForNullptr(m_IO, "in call to IO::SetParameter");

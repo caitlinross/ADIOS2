@@ -182,6 +182,11 @@ IO::~IO() = default;
 
 void IO::SetEngine(const std::string engineType) noexcept
 {
+    SetEngine(engineType, "");
+}
+
+void IO::SetEngine(const std::string engineType, const std::string pluginName) noexcept
+{
     auto lf_InsertParam = [&](const std::string &key,
                               const std::string &value) {
         m_Parameters.insert(std::pair<std::string, std::string>(key, value));
@@ -225,6 +230,11 @@ void IO::SetEngine(const std::string engineType) noexcept
         lf_InsertParam("OpenTimeoutSecs", "3600");
         lf_InsertParam("StreamReader", "true");
     }
+    else if (engineTypeLC == "plugin")
+    {
+        finalEngineType = engineType;
+        lf_InsertParam("PluginEngineName", pluginName);
+    }
     /* "file" is handled entirely in IO::Open() as it needs the name */
     else
     {
@@ -233,6 +243,7 @@ void IO::SetEngine(const std::string engineType) noexcept
 
     m_EngineType = finalEngineType;
 }
+
 void IO::SetIOMode(const IOMode ioMode) { m_IOMode = ioMode; }
 
 void IO::SetParameters(const Params &parameters) noexcept

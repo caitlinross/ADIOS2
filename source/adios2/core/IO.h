@@ -110,6 +110,15 @@ public:
     void SetEngine(const std::string engine) noexcept;
 
     /**
+     * @brief Sets the engine type for current IO object when using an engine plugin.
+     * @param engineType predefined engine type, default is bpfile. To use a plugin, engineType
+     * should be set to "plugin".
+     * @param pluginName the name of the plugin to be used. This parameter is only used
+     * when engineType == "plugin".
+     */
+    void SetEngine(const std::string engine, const std::string pluginName) noexcept;
+
+    /**
      * @brief Set the IO mode (collective or independent), not yet implemented
      * @param IO mode */
     void SetIOMode(const IOMode mode);

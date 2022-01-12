@@ -96,6 +96,12 @@ void ADIOS::RemoveAllIOs() noexcept
     m_ADIOS->RemoveAllIOs();
 }
 
+bool ADIOS::LoadPlugin(const Params &params)
+{
+    CheckPointer("in call to ADIOS::LoadPlugin");
+    return m_ADIOS->LoadPlugin(params);
+}
+
 // PRIVATE
 void ADIOS::CheckPointer(const std::string hint)
 {

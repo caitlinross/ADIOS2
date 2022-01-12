@@ -74,6 +74,14 @@ public:
     void SetEngine(const std::string engineType);
 
     /**
+     * @brief Sets the engine type for current IO object when using an engine plugin.
+     * @param engineType predefined engine type, default is bpfile. To use a plugin, engineType
+     * should be set to "plugin".
+     * @param pluginName the name of the plugin to be used
+     */
+    void SetEngine(const std::string engineType, const std::string pluginName);
+
+    /**
      * @brief Sets a single parameter. Overwrites value if key exists;
      * @param key parameter key
      * @param value parameter value

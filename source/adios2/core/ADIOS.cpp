@@ -18,6 +18,7 @@
 #include "adios2/core/IO.h"
 #include "adios2/helper/adiosCommDummy.h"
 #include "adios2/helper/adiosFunctions.h" //InquireKey, BroadcastFile
+#include "adios2/helper/adiosPluginManager.h"
 #include "adios2/operator/OperatorFactory.h"
 #include <adios2sys/SystemTools.hxx>
 
@@ -68,6 +69,9 @@ ADIOS::ADIOS(const std::string configFile, helper::Comm comm,
             YAMLInit(configFile);
         }
     }
+
+    auto& pluginManager = helper::PluginManager::GetInstance();
+    pluginManager.DiscoverPlugins();
 }
 
 ADIOS::ADIOS(const std::string configFile, const std::string hostLanguage)
@@ -207,6 +211,12 @@ bool ADIOS::RemoveIO(const std::string name)
 }
 
 void ADIOS::RemoveAllIOs() noexcept { m_IOs.clear(); }
+
+bool ADIOS::LoadPlugin(const Params &params)
+{
+    auto& pluginManager = helper::PluginManager::GetInstance();
+    return pluginManager.LoadPlugin(params);
+}
 
 // PRIVATE FUNCTIONS
 void ADIOS::CheckOperator(const std::string name) const

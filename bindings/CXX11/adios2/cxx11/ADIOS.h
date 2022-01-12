@@ -243,6 +243,20 @@ public:
      * in main thread. Useful when using Async IO */
     void ExitComputationBlock() noexcept;
 
+    /**
+     * Load a single engine or operator plugin. Loading either type of plugin requires
+     * two params to be specified, "PluginName" and "PluginLibrary". "PluginName" is
+     * the name used to refer to the plugin when setting the engine or operator to be used,
+     * while "PluginLibrary" is the name of the shared library. "PluginLibrary" can include
+     * the path (relative or absolute). If it's not a path, then dlopen will look for the
+     * library as specified in its manpages.
+     * @param params Params object should contain PluginName and PluginLibrary entries as
+     * described above.
+     * @return true if the specified plugin was successfully loaded (or had already been loaded),
+     * false otherwise
+     */
+    bool LoadPlugin(const Params &params);
+
 protected:
     std::shared_ptr<core::ADIOS> m_ADIOS;
 
