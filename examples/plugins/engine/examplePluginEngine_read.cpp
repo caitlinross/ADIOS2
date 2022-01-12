@@ -60,14 +60,20 @@ int main(int argc, char *argv[])
         /** ADIOS class factory of IO class objects */
         adios2::ADIOS adios;
 
+        /* set up parameters needed to use plugins */
+        adios2::Params params;
+        params["PluginName"] = "ReadPlugin";
+        params["PluginLibrary"] = "PluginEngineRead";
+        adios.LoadPlugin(params);
+
         /*** IO class object: settings and factory of Settings: Variables,
          * Parameters, Transports, and Execution: Engines */
         adios2::IO io = adios.DeclareIO("PluginIO");
 
         /** Engine derived class, spawned to start IO operations */
-        io.SetEngine("Plugin");
-        io.SetParameters({{"PluginName", "ReadPlugin"}});
-        io.SetParameters({{"PluginLibrary", "PluginEngineRead"}});
+        io.SetEngine("Plugin", "ReadPlugin");
+        //io.SetParameters({{"PluginName", "ReadPlugin"}});
+        //io.SetParameters({{"PluginLibrary", "PluginEngineRead"}});
         adios2::Engine reader = io.Open("TestPlugin", adios2::Mode::Read);
 
         auto var = io.InquireVariable<float>("data");

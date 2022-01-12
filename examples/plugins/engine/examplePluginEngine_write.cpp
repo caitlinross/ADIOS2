@@ -51,6 +51,12 @@ int main(int argc, char *argv[])
         /** ADIOS class factory of IO class objects */
         adios2::ADIOS adios;
 
+        /* set up parameters needed to use plugins */
+        adios2::Params params;
+        params["PluginName"] = "WritePlugin";
+        params["PluginLibrary"] = "PluginEngineWrite";
+        adios.LoadPlugin(params);
+
         /*** IO class object: settings and factory of Settings: Variables,
          * Parameters, Transports, and Execution: Engines */
         adios2::IO io = adios.DeclareIO("PluginIO");
@@ -61,9 +67,9 @@ int main(int argc, char *argv[])
             "data", {}, {}, {Nx}, adios2::ConstantDims);
 
         /** Engine derived class, spawned to start IO operations */
-        io.SetEngine("Plugin");
-        io.SetParameters({{"PluginName", "WritePlugin"}});
-        io.SetParameters({{"PluginLibrary", "PluginEngineWrite"}});
+        io.SetEngine("Plugin", "WritePlugin");
+        //io.SetParameters({{"PluginName", "WritePlugin"}});
+        //io.SetParameters({{"PluginLibrary", "PluginEngineWrite"}});
         adios2::Engine writer = io.Open("TestPlugin", adios2::Mode::Write);
 
         if (streaming)
